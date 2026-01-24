@@ -55,7 +55,7 @@ with st.sidebar:
         }
 
 # -------------------------------------------------
-# Core calculations
+# Core calculations (FIXED)
 # -------------------------------------------------
 results = []
 
@@ -66,21 +66,14 @@ for country in countries_selected:
     labour_cost = cdata["labour_cost_eur_per_t"]
 
     # ----- Electricity mix -----
-if use_manual_mix:
-    total = sum(manual_mix_raw.values())
-    if total == 0:
-        st.error("Manual electricity mix cannot sum to zero.")
-        st.stop()
-    mix = {t: manual_mix_raw[t] / total for t in TECHS}
-else:
-    # READ DIRECTLY FROM WIDE-FORM CSV
-    mix = {}
-    for t in TECHS:
-        if t in cdata.index:
-            mix[t] = cdata[t]
-        else:
-            mix[t] = 0.0
-
+    if use_manual_mix:
+        total = sum(manual_mix_raw.values())
+        if total == 0:
+            st.error("Manual electricity mix cannot sum to zero.")
+            st.stop()
+        mix = {t: manual_mix_raw[t] / total for t in TECHS}
+    else:
+        mix = {t: cdata[t] if t in cdata.index else 0.0 for t in TECHS}
 
     electricity_price = sum(mix[t] * LCOE_KWH[t] for t in TECHS)
     grid_co2_intensity = sum(mix[t] * DEFAULT_CO2_KWH[t] for t in TECHS)
@@ -88,23 +81,13 @@ else:
     electricity_cost = E * electricity_price
     electricity_co2 = E * grid_co2_intensity
 
-    # -------------------------------------------------
-    # Materials — NEW WEIGHTED TRADE FORMULA
-    # -------------------------------------------------
+    # ----- Materials (weighted trade) -----
     mat = materials_df[materials_df["aluminium_country"] == country]
-
-    material_cost = (
-        mat["weight"] * mat["price_eur_per_t"]
-    ).sum()
-
-    # (Optional extension later: weighted CO₂ per supplier)
+    material_cost = (mat["weight"] * mat["price_eur_per_t"]).sum()
     material_co2 = 0.0
 
-    # -------------------------------------------------
-    # Costs
-    # -------------------------------------------------
+    # ----- Costs -----
     carbon_cost = ((electricity_co2 + material_co2) / 1000) * carbon_tax
-
     operational_cost = electricity_cost + labour_cost + material_cost
     margin_cost = operational_cost * margin_rate
     total_cost = operational_cost + margin_cost + carbon_cost
@@ -208,6 +191,3 @@ fig_stack.update_layout(
 )
 
 st.plotly_chart(fig_stack, use_container_width=True)
-
-
-
