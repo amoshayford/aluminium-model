@@ -1,0 +1,229 @@
+aluminium_country,material,supplier_country,weight,price_eur_per_t
+China,alumina,Guinea,0.2773,398.0
+China,alumina,China,0.4246,364.3
+China,alumina,India,0.2981,411.5
+China,graphite,Russia,0.6894,799.0
+China,graphite,China,0.0751,802.1
+China,graphite,Indonesia,0.2355,664.5
+Canada,alumina,Canada,0.1135,351.3
+Canada,alumina,Guinea,0.3474,402.5
+Canada,alumina,Australia,0.539,419.2
+Canada,graphite,India,0.506,672.1
+Canada,graphite,China,0.494,653.3
+Australia,alumina,India,0.2278,416.5
+Australia,alumina,Indonesia,0.1979,384.5
+Australia,alumina,Canada,0.5743,387.8
+Australia,graphite,Australia,0.887,787.3
+Australia,graphite,Canada,0.0561,717.6
+Australia,graphite,Brazil,0.0569,678.1
+Norway,alumina,Canada,0.7049,403.4
+Norway,alumina,Brazil,0.2951,375.0
+Norway,graphite,India,0.0198,714.6
+Norway,graphite,Indonesia,0.1311,779.7
+Norway,graphite,Mozambique,0.8492,781.2
+United States,alumina,South Africa,0.9839,415.1
+United States,alumina,China,0.0161,398.4
+United States,graphite,Russia,0.7139,738.2
+United States,graphite,Mozambique,0.2353,679.3
+United States,graphite,Guinea,0.0509,717.4
+France,alumina,Guinea,0.9132,366.4
+France,alumina,Australia,0.0868,356.4
+France,graphite,Canada,0.5916,744.6
+France,graphite,India,0.4084,673.2
+Germany,alumina,Indonesia,0.1447,417.7
+Germany,alumina,Mozambique,0.8553,389.8
+Germany,graphite,India,0.6081,816.9
+Germany,graphite,Australia,0.3919,801.8
+India,alumina,Russia,0.404,402.2
+India,alumina,India,0.2229,396.8
+India,alumina,China,0.3731,368.5
+India,graphite,India,0.1402,758.7
+India,graphite,China,0.7598,739.2
+India,graphite,Australia,0.1,807.2
+United Arab Emirates,alumina,Brazil,0.4801,377.8
+United Arab Emirates,alumina,Guinea,0.5199,414.8
+United Arab Emirates,graphite,China,0.1349,717.1
+United Arab Emirates,graphite,Australia,0.4407,813.8
+United Arab Emirates,graphite,Mozambique,0.4244,679.6
+South Africa,alumina,Canada,0.0374,387.4
+South Africa,alumina,Russia,0.2347,369.7
+South Africa,alumina,India,0.7279,374.8
+South Africa,graphite,Indonesia,0.8265,733.3
+South Africa,graphite,Brazil,0.1735,751.8
+United Kingdom,alumina,Australia,0.677,405.2
+United Kingdom,alumina,South Africa,0.2614,392.8
+United Kingdom,alumina,Indonesia,0.0616,353.8
+United Kingdom,graphite,Russia,0.774,676.8
+United Kingdom,graphite,Indonesia,0.226,685.6
+Bahrain,alumina,Canada,0.5402,410.5
+Bahrain,alumina,South Africa,0.4598,372.6
+Bahrain,graphite,Brazil,0.6336,815.5
+Bahrain,graphite,Australia,0.3664,765.2
+Japan,alumina,Brazil,0.0447,387.9
+Japan,alumina,Guinea,0.9553,410.2
+Japan,graphite,Australia,0.8559,714.2
+Japan,graphite,Canada,0.1441,663.5
+South Korea,alumina,Indonesia,0.5977,365.8
+South Korea,alumina,Brazil,0.4023,391.5
+South Korea,graphite,Canada,0.3624,764.4
+South Korea,graphite,Indonesia,0.008,659.4
+South Korea,graphite,China,0.6295,676.8
+Mexico,alumina,Indonesia,0.1638,360.9
+Mexico,alumina,Brazil,0.8362,385.7
+Mexico,graphite,Brazil,0.4906,650.2
+Mexico,graphite,Guinea,0.0828,756.2
+Mexico,graphite,Russia,0.4266,684.0
+Kazakhstan,alumina,Indonesia,0.9786,403.9
+Kazakhstan,alumina,China,0.0214,401.2
+Kazakhstan,graphite,Australia,0.901,803.2
+Kazakhstan,graphite,India,0.0691,742.1
+Kazakhstan,graphite,Russia,0.0299,815.7
+Indonesia,alumina,China,0.47,414.2
+Indonesia,alumina,Russia,0.53,372.0
+Indonesia,graphite,South Africa,0.1994,806.6
+Indonesia,graphite,Guinea,0.1578,684.1
+Indonesia,graphite,Mozambique,0.6428,799.6
+Saudi Arabia,alumina,China,0.7947,402.5
+Saudi Arabia,alumina,Brazil,0.2053,385.8
+Saudi Arabia,graphite,Brazil,0.1093,768.0
+Saudi Arabia,graphite,Russia,0.8907,727.7
+Argentina,alumina,Brazil,0.7695,407.7
+Argentina,alumina,India,0.2305,393.9
+Argentina,graphite,China,0.0774,717.1
+Argentina,graphite,Indonesia,0.0181,777.0
+Argentina,graphite,South Africa,0.9045,726.9
+Iceland,alumina,Guinea,0.6066,358.8
+Iceland,alumina,China,0.0097,393.3
+Iceland,alumina,Mozambique,0.3837,350.7
+Iceland,graphite,South Africa,0.0781,792.4
+Iceland,graphite,Canada,0.9219,768.3
+Ghana,alumina,South Africa,0.6015,358.4
+Ghana,alumina,Australia,0.3985,406.9
+Ghana,graphite,Russia,0.6978,781.3
+Ghana,graphite,Guinea,0.3022,671.1
+Vietnam,alumina,South Africa,0.6686,412.1
+Vietnam,alumina,Guinea,0.099,412.1
+Vietnam,alumina,Canada,0.2324,386.1
+Vietnam,graphite,Brazil,0.1901,660.1
+Vietnam,graphite,India,0.0454,800.7
+Vietnam,graphite,Mozambique,0.7645,747.6
+Malaysia,alumina,Indonesia,0.9475,416.7
+Malaysia,alumina,South Africa,0.0525,361.7
+Malaysia,graphite,India,0.5845,807.8
+Malaysia,graphite,Australia,0.076,668.3
+Malaysia,graphite,Mozambique,0.3395,726.9
+Mozambique,alumina,Russia,0.846,392.3
+Mozambique,alumina,India,0.154,416.9
+Mozambique,graphite,China,0.1386,754.3
+Mozambique,graphite,Australia,0.5194,704.4
+Mozambique,graphite,Brazil,0.342,669.0
+Iran,alumina,Indonesia,0.1176,351.3
+Iran,alumina,China,0.8219,398.3
+Iran,alumina,Canada,0.0605,411.0
+Iran,graphite,China,0.3884,805.5
+Iran,graphite,Mozambique,0.404,759.5
+Iran,graphite,South Africa,0.2076,650.9
+Cameroon,alumina,Canada,0.4247,374.7
+Cameroon,alumina,India,0.5753,409.9
+Cameroon,graphite,China,0.0194,726.5
+Cameroon,graphite,Canada,0.9806,816.0
+Brazil,alumina,China,0.0213,406.0
+Brazil,alumina,South Africa,0.0928,355.6
+Brazil,alumina,Canada,0.8859,366.2
+Brazil,graphite,Australia,0.6773,731.3
+Brazil,graphite,China,0.3227,671.5
+Egypt,alumina,Guinea,0.5128,402.8
+Egypt,alumina,China,0.0821,364.8
+Egypt,alumina,South Africa,0.4051,392.1
+Egypt,graphite,Australia,0.0296,707.5
+Egypt,graphite,South Africa,0.9704,784.5
+Qatar,alumina,Guinea,0.4677,364.1
+Qatar,alumina,Russia,0.2175,400.4
+Qatar,alumina,Canada,0.3148,409.3
+Qatar,graphite,Canada,0.2178,766.7
+Qatar,graphite,Indonesia,0.2207,806.4
+Qatar,graphite,Brazil,0.5615,661.8
+Tajikistan,alumina,China,0.0435,373.5
+Tajikistan,alumina,Australia,0.5781,399.3
+Tajikistan,alumina,South Africa,0.3784,395.4
+Tajikistan,graphite,Mozambique,0.6422,770.2
+Tajikistan,graphite,South Africa,0.3578,782.7
+Romania,alumina,Mozambique,0.0497,375.1
+Romania,alumina,India,0.9503,400.6
+Romania,graphite,Indonesia,0.4073,754.4
+Romania,graphite,Australia,0.1795,705.1
+Romania,graphite,Canada,0.4131,727.8
+Oman,alumina,South Africa,0.1377,378.3
+Oman,alumina,Russia,0.8623,399.4
+Oman,graphite,Brazil,0.1912,752.9
+Oman,graphite,Mozambique,0.8088,780.4
+Uzbekistan,alumina,Brazil,0.7714,409.4
+Uzbekistan,alumina,Russia,0.2286,367.6
+Uzbekistan,graphite,South Africa,0.5229,724.7
+Uzbekistan,graphite,China,0.4421,796.2
+Uzbekistan,graphite,Russia,0.0349,651.8
+Italy,alumina,Russia,0.0286,384.4
+Italy,alumina,Brazil,0.522,410.0
+Italy,alumina,Mozambique,0.4494,379.3
+Italy,graphite,Russia,0.1045,676.0
+Italy,graphite,Canada,0.8955,650.4
+Spain,alumina,Russia,0.3379,362.1
+Spain,alumina,China,0.6621,378.6
+Spain,graphite,Indonesia,0.3414,723.6
+Spain,graphite,South Africa,0.1026,710.8
+Spain,graphite,Australia,0.5561,706.1
+Montenegro,alumina,China,0.915,391.0
+Montenegro,alumina,Canada,0.085,412.9
+Montenegro,graphite,South Africa,0.1438,782.6
+Montenegro,graphite,Brazil,0.744,679.7
+Montenegro,graphite,Russia,0.1121,708.1
+Russia,alumina,Russia,0.5925,376.0
+Russia,alumina,South Africa,0.1296,374.9
+Russia,alumina,Brazil,0.2779,354.0
+Russia,graphite,Russia,0.2401,728.7
+Russia,graphite,Guinea,0.6924,722.9
+Russia,graphite,Australia,0.0676,734.5
+Venezuela,alumina,India,0.3733,360.2
+Venezuela,alumina,Canada,0.6267,385.7
+Venezuela,graphite,Brazil,0.0804,759.7
+Venezuela,graphite,Indonesia,0.545,675.8
+Venezuela,graphite,India,0.3746,758.7
+Thailand,alumina,South Africa,0.2508,354.5
+Thailand,alumina,China,0.7492,419.4
+Thailand,graphite,Guinea,0.0264,714.4
+Thailand,graphite,Indonesia,0.5102,682.0
+Thailand,graphite,Mozambique,0.4633,777.0
+Netherlands,alumina,South Africa,0.1003,401.6
+Netherlands,alumina,Russia,0.5696,394.6
+Netherlands,alumina,Guinea,0.3302,414.5
+Netherlands,graphite,Canada,0.8709,655.3
+Netherlands,graphite,South Africa,0.0099,747.1
+Netherlands,graphite,Russia,0.1193,680.7
+Slovakia,alumina,Australia,0.2743,365.6
+Slovakia,alumina,Brazil,0.7257,375.7
+Slovakia,graphite,Mozambique,0.5756,721.1
+Slovakia,graphite,Canada,0.3427,654.4
+Slovakia,graphite,India,0.0818,699.5
+Slovenia,alumina,Russia,0.8949,403.4
+Slovenia,alumina,Australia,0.1051,363.2
+Slovenia,graphite,Australia,0.3076,652.8
+Slovenia,graphite,Indonesia,0.6924,669.3
+Turkey,alumina,Canada,0.2276,371.0
+Turkey,alumina,Mozambique,0.3924,410.1
+Turkey,alumina,Brazil,0.3799,374.0
+Turkey,graphite,Guinea,0.4456,743.1
+Turkey,graphite,Mozambique,0.5544,687.4
+Ukraine,alumina,Indonesia,0.3653,386.8
+Ukraine,alumina,Brazil,0.6347,355.3
+Ukraine,graphite,Guinea,0.1282,810.0
+Ukraine,graphite,Brazil,0.6233,814.5
+Ukraine,graphite,Indonesia,0.2485,655.5
+Colombia,alumina,South Africa,0.2412,396.9
+Colombia,alumina,Guinea,0.0235,380.1
+Colombia,alumina,Brazil,0.7353,403.7
+Colombia,graphite,Russia,0.0547,737.1
+Colombia,graphite,China,0.9453,755.0
+New Zealand,alumina,India,0.4469,354.5
+New Zealand,alumina,South Africa,0.5531,382.0
+New Zealand,graphite,Guinea,0.7089,811.9
+New Zealand,graphite,South Africa,0.2911,810.5
