@@ -18,7 +18,7 @@ st.title("⚡ Aluminium Production — Integrated Decision Model")
 # Load CSV data
 # -------------------------------------------------
 country_df = pd.read_csv("data/country_electricity_mix.csv")
-electricity_df = pd.read_csv("data/electricity_tech_data.csv")
+electricity_df = pd.read_csv("data/electricity_price_co2.csv")
 materials_df = pd.read_csv("data/materials_trade.csv")
 
 # -------------------------------------------------
@@ -191,3 +191,4 @@ fig_stack.update_layout(
 )
 
 st.plotly_chart(fig_stack, use_container_width=True)
+
