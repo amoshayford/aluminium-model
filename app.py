@@ -8,22 +8,18 @@ import plotly.colors as pc
 # -------------------------------------------------
 # Page config
 # -------------------------------------------------
-st.set_page_config(page_title="Aluminium Production Decision Model", layout="wide")
+st.set_page_config(
+    page_title="Aluminium Production Decision Model",
+    layout="wide"
+)
 st.title("⚡ Aluminium Production — Integrated Decision Model")
 
 # -------------------------------------------------
 # Load CSV data
 # -------------------------------------------------
-tech_df = pd.read_csv("data/electricity_tech_data.csv")
 country_df = pd.read_csv("data/country_electricity_mix.csv")
+electricity_df = pd.read_csv("data/electricity_tech_data.csv")
 materials_df = pd.read_csv("data/materials_trade.csv")
-
-# -------------------------------------------------
-# Electricity dictionaries
-# -------------------------------------------------
-LCOE_KWH = dict(zip(tech_df["technology"], tech_df["lcoe_eur_per_kwh"]))
-DEFAULT_CO2_KWH = dict(zip(tech_df["technology"], tech_df["co2_kg_per_kwh"]))
-TECHS = list(LCOE_KWH.keys())
 
 # -------------------------------------------------
 # Sidebar
@@ -37,56 +33,49 @@ with st.sidebar:
         default=["China", "Canada"]
     )
 
-    carbon_tax = st.number_input("Carbon tax (€/t CO₂)", 0.0, 300.0, 60.0, 1.0)
+    carbon_tax = st.number_input(
+        "Carbon tax (€/t CO₂)",
+        min_value=0.0,
+        max_value=300.0,
+        value=60.0,
+        step=1.0
+    )
 
     margin_rate = st.number_input(
         "Margin (% of operational cost)",
-        0.0, 50.0, 15.0, 0.5
+        min_value=0.0,
+        max_value=50.0,
+        value=15.0,
+        step=0.5
     ) / 100.0
 
-    st.markdown("---")
-    use_manual_mix = st.checkbox("Manual electricity mix override")
-
-    if use_manual_mix:
-        st.subheader("Manual electricity mix (%)")
-        manual_mix_raw = {
-            t: st.slider(t.capitalize(), 0.0, 100.0, 100.0 / len(TECHS), 1.0)
-            for t in TECHS
-        }
-
 # -------------------------------------------------
-# Core calculations (FIXED)
+# Core calculations
 # -------------------------------------------------
 results = []
 
 for country in countries_selected:
 
+    # --- Country-level data ---
     cdata = country_df[country_df["country"] == country].iloc[0]
+    edata = electricity_df[electricity_df["country"] == country].iloc[0]
+
     E = cdata["energy_kwh_per_t"]
     labour_cost = cdata["labour_cost_eur_per_t"]
 
-    # ----- Electricity mix -----
-    if use_manual_mix:
-        total = sum(manual_mix_raw.values())
-        if total == 0:
-            st.error("Manual electricity mix cannot sum to zero.")
-            st.stop()
-        mix = {t: manual_mix_raw[t] / total for t in TECHS}
-    else:
-        mix = {t: cdata[t] if t in cdata.index else 0.0 for t in TECHS}
+    electricity_price = edata["avg_electricity_price_eur_per_kwh"]
+    grid_co2_intensity = edata["avg_co2_kg_per_kwh"]
 
-    electricity_price = sum(mix[t] * LCOE_KWH[t] for t in TECHS)
-    grid_co2_intensity = sum(mix[t] * DEFAULT_CO2_KWH[t] for t in TECHS)
-
+    # --- Electricity ---
     electricity_cost = E * electricity_price
     electricity_co2 = E * grid_co2_intensity
 
-    # ----- Materials (weighted trade) -----
+    # --- Materials (weighted trade) ---
     mat = materials_df[materials_df["aluminium_country"] == country]
     material_cost = (mat["weight"] * mat["price_eur_per_t"]).sum()
-    material_co2 = 0.0
+    material_co2 = 0.0  # placeholder (can be extended later)
 
-    # ----- Costs -----
+    # --- Costs ---
     carbon_cost = ((electricity_co2 + material_co2) / 1000) * carbon_tax
     operational_cost = electricity_cost + labour_cost + material_cost
     margin_cost = operational_cost * margin_rate
@@ -108,11 +97,12 @@ for country in countries_selected:
 df = pd.DataFrame(results)
 
 # -------------------------------------------------
-# Visuals
+# Visual styling
 # -------------------------------------------------
 PALETTE = pc.qualitative.Alphabet
 country_colors = {
-    c: PALETTE[i % len(PALETTE)] for i, c in enumerate(countries_selected)
+    c: PALETTE[i % len(PALETTE)]
+    for i, c in enumerate(countries_selected)
 }
 
 # -------------------------------------------------
@@ -131,7 +121,10 @@ price_range = np.linspace(0.03, 0.20, 200)
 fig_el = go.Figure()
 
 for _, r in df.iterrows():
-    E = country_df[country_df["country"] == r["Country"]]["energy_kwh_per_t"].iloc[0]
+    E = country_df[
+        country_df["country"] == r["Country"]
+    ]["energy_kwh_per_t"].iloc[0]
+
     curve = E * price_range + r["Carbon cost (€/t)"]
 
     fig_el.add_trace(go.Scatter(
@@ -139,7 +132,10 @@ for _, r in df.iterrows():
         y=curve,
         mode="lines",
         name=r["Country"],
-        line=dict(color=country_colors[r["Country"]], width=2)
+        line=dict(
+            color=country_colors[r["Country"]],
+            width=2
+        )
     ))
 
 fig_el.update_layout(
@@ -151,7 +147,7 @@ fig_el.update_layout(
 st.plotly_chart(fig_el, use_container_width=True)
 
 # -------------------------------------------------
-# Plot 2 — Electricity price vs CO₂
+# Plot 2 — Electricity price vs CO₂ footprint
 # -------------------------------------------------
 st.markdown("---")
 st.subheader("Electricity price vs CO₂ footprint")
@@ -182,7 +178,11 @@ cost_cols = [
 
 fig_stack = go.Figure()
 for col in cost_cols:
-    fig_stack.add_trace(go.Bar(x=df["Country"], y=df[col], name=col))
+    fig_stack.add_trace(go.Bar(
+        x=df["Country"],
+        y=df[col],
+        name=col
+    ))
 
 fig_stack.update_layout(
     barmode="stack",
