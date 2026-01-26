@@ -199,14 +199,54 @@ with tab_overview:
 with tab_scenario:
     st.subheader("Policy and economic assumptions")
     st.markdown(
-        "This tab defines exogenous policy parameters applied uniformly across countries."
+        "This tab explores how exogenous policy parameters influence production costs."
     )
 
+    st.markdown("### Current scenario parameters")
     st.write(f"**Carbon price:** {carbon_tax:.0f} €/t CO₂")
     st.write(f"**Producer margin:** {margin_rate*100:.0f} % of operational cost")
 
+    st.markdown("---")
+    st.markdown("### Impact of carbon pricing on total production cost")
+
+    price_range = np.linspace(0, 200, 100)
+    fig_policy = go.Figure()
+
+    for _, r in df.iterrows():
+        electricity_co2 = r["CO₂ footprint (kg/t)"]
+        base_operational = (
+            r["Electricity cost (€/t)"]
+            + r["Labour cost (€/t)"]
+            + r["Material cost (€/t)"]
+        )
+        margin_component = base_operational * margin_rate
+
+        total_cost_curve = (
+            base_operational
+            + margin_component
+            + (electricity_co2 / 1000) * price_range
+        )
+
+        fig_policy.add_trace(
+            go.Scatter(
+                x=price_range,
+                y=total_cost_curve,
+                mode="lines",
+                name=r["Country"],
+                line=dict(color=country_colors[r["Country"]], width=2),
+            )
+        )
+
+    fig_policy.update_layout(
+        xaxis_title="Carbon price (€/t CO₂)",
+        yaxis_title="Total production cost (€/t)",
+        hovermode="x unified",
+    )
+
+    st.plotly_chart(fig_policy, use_container_width=True)
+
 # -------------------------------------------------
-# TAB 3 — Electricity & grid mix
+# TAB 3 — Electricity & grid mix — Electricity & grid mix
 # -------------------------------------------------
 with tab_grid:
     st.subheader("Electricity system representation")
