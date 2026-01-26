@@ -59,13 +59,16 @@ price_factors = {
 # Sidebar — global scenario definition
 # =================================================
 with st.sidebar:
-    st.header("Scenario definition")
+    st.header("Select Country(s)")
 
     countries_selected = st.multiselect(
         "Countries included in comparison",
         sorted(country_df["country"].unique()),
         default=["China", "Canada"],
     )
+
+    st.markdown("---")
+    st.header("Scenario")
 
     carbon_tax = st.number_input(
         "Carbon price (€/t CO₂)",
@@ -86,9 +89,13 @@ with st.sidebar:
         / 100.0
     )
 
+    st.markdown("---")
+    st.subheader("Interpretation note")
     st.markdown(
-        """
-        **Interpretation note**  
+        "The model represents average production conditions. "
+        "Electricity prices and carbon intensities respond endogenously "
+        "to the assumed electricity mix."
+    )**  
         The model represents average production conditions. Electricity prices
         and carbon intensities respond endogenously to the assumed grid mix.
         """
