@@ -165,16 +165,73 @@ tab_scenario, tab_grid, tab_costs = st.tabs(
 # TAB — Scenario outcomes
 # =================================================
 with tab_scenario:
-    fig = px.scatter(
+    st.subheader("Scenario comparison")
+
+    # -------------------------------
+    # Plot 1: Total cost vs CO2 footprint
+    # -------------------------------
+    fig1 = px.scatter(
         df,
         x="CO₂ footprint (kg/t)",
         y="Total cost (€/t)",
         color="Country",
         text="Country",
         color_discrete_map=country_colors,
+        title="Total production cost vs CO₂ footprint",
     )
-    fig.update_traces(textposition="top center")
-    st.plotly_chart(fig, use_container_width=True)
+    fig1.update_traces(textposition="top center")
+    fig1.update_layout(
+        xaxis_title="CO₂ footprint (kg CO₂ / t aluminium)",
+        yaxis_title="Total cost (€/t aluminium)",
+    )
+    st.plotly_chart(fig1, use_container_width=True)
+
+    st.markdown("---")
+
+    # -------------------------------
+    # Plot 2: Electricity cost vs electricity price
+    # -------------------------------
+    fig2 = px.scatter(
+        df,
+        x="Electricity price (€/kWh)",
+        y="Electricity cost (€/t)",
+        color="Country",
+        text="Country",
+        color_discrete_map=country_colors,
+        title="Electricity cost vs electricity price",
+    )
+    fig2.update_traces(textposition="top center")
+    fig2.update_layout(
+        xaxis_title="Electricity price (€/kWh)",
+        yaxis_title="Electricity cost (€/t aluminium)",
+    )
+    st.plotly_chart(fig2, use_container_width=True)
+
+    st.markdown("---")
+
+    # -------------------------------
+    # Plot 3: Electricity + carbon cost vs electricity price
+    # -------------------------------
+    df["Electricity + carbon cost (€/t)"] = (
+        df["Electricity cost (€/t)"] + df["Carbon cost (€/t)"]
+    )
+
+    fig3 = px.scatter(
+        df,
+        x="Electricity price (€/kWh)",
+        y="Electricity + carbon cost (€/t)",
+        color="Country",
+        text="Country",
+        color_discrete_map=country_colors,
+        title="Electricity + carbon cost vs electricity price",
+    )
+    fig3.update_traces(textposition="top center")
+    fig3.update_layout(
+        xaxis_title="Electricity price (€/kWh)",
+        yaxis_title="Electricity + carbon cost (€/t aluminium)",
+    )
+    st.plotly_chart(fig3, use_container_width=True)
+
 
 # =================================================
 # TAB — Electricity system
@@ -231,3 +288,4 @@ with tab_costs:
     st.plotly_chart(fig, use_container_width=True)
 
     st.dataframe(df.round(2), use_container_width=True)
+
