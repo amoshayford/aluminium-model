@@ -20,7 +20,7 @@ st.caption(
 )
 
 # =================================================
-# Data loading
+# Data loading (UNCHANGED)
 # =================================================
 country_df = pd.read_csv("data/country_electricity_mix.csv")
 electricity_df = pd.read_csv("data/electricity_price_co2.csv")
@@ -90,36 +90,53 @@ with st.sidebar:
     )
 
     st.markdown("---")
+    st.header("Model mode")
+
+    model_mode = st.radio(
+        "Electricity system representation",
+        ["Automated (country data)", "Manual (scenario grid)"],
+        index=0,
+    )
+
+    manual_mode = model_mode == "Manual (scenario grid)"
+
+    st.markdown("---")
     st.subheader("Interpretation note")
     st.markdown(
         "The model represents average production conditions. "
-        "Electricity prices and carbon intensities respond endogenously "
-        "to the assumed electricity mix."
+        "In manual mode, electricity prices and carbon intensities "
+        "are recomputed from user-defined grid scenarios."
     )
 
 # =================================================
-# Grid mix adjustment (scenario layer)
+# Grid mix definitions
 # =================================================
-country_mixes = {}
+country_mixes_auto = {}
+country_mixes_manual = {}
 
 for country in countries_selected:
     cdata = country_df[country_df["country"] == country].iloc[0]
     mix = {source: float(cdata[source]) for source in sources}
-    country_mixes[country] = mix
+    country_mixes_auto[country] = mix.copy()
+    country_mixes_manual[country] = mix.copy()
 
 # =================================================
-# Core model calculations (unchanged math)
+# Core model calculations (mode-aware, math unchanged)
 # =================================================
 results = []
 
 for country in countries_selected:
     cdata = country_df[country_df["country"] == country].iloc[0]
-    edata = electricity_df[electricity_df["country"] == country].iloc[0]
 
     E = cdata["energy_kwh_per_t"]
     labour_cost = cdata["labour_cost_eur_per_t"]
 
-    mix = country_mixes[country]
+    mix = (
+        country_mixes_manual[country]
+        if manual_mode
+        else country_mixes_auto[country]
+    )
+
     electricity_price = sum(mix[s] * price_factors[s] for s in sources)
     grid_co2_intensity = sum(mix[s] * co2_factors[s] for s in sources)
 
@@ -167,18 +184,11 @@ tab_scenario, tab_grid, tab_costs = st.tabs(
     ["⚙️ Scenario Builder", "⚡ Electricity & Grid", "💰 Cost Structure"]
 )
 
-# -------------------------------------------------
-# TAB 1 — Overview (decision-focused)
-# -------------------------------------------------
-# Scenario builder
-# -------------------------------------------------
+# =================================================
+# TAB 1 — Scenario outcomes
+# =================================================
 with tab_scenario:
     st.subheader("Scenario outcomes and sensitivities")
-    st.markdown(
-        "This tab combines scenario definition with key outcome indicators and sensitivity analyses."
-    )
-
-    st.markdown("### Cost–emissions trade-off")
 
     fig_tradeoff = px.scatter(
         df,
@@ -197,71 +207,19 @@ with tab_scenario:
 
     st.plotly_chart(fig_tradeoff, use_container_width=True)
 
-    st.markdown("---")
-    st.markdown("### Electricity cost sensitivity to electricity price")
-
-    price_range = np.linspace(0.03, 0.20, 200)
-    fig_el_cost = go.Figure()
-
-    for _, r in df.iterrows():
-        E = country_df[country_df["country"] == r["Country"]]["energy_kwh_per_t"].iloc[0]
-        electricity_cost_curve = E * price_range
-
-        fig_el_cost.add_trace(
-            go.Scatter(
-                x=price_range,
-                y=electricity_cost_curve,
-                mode="lines",
-                name=r["Country"],
-                line=dict(color=country_colors[r["Country"]], width=2),
-            )
-        )
-
-    fig_el_cost.update_layout(
-        xaxis_title="Electricity price (€/kWh)",
-        yaxis_title="Electricity cost (€/t)",
-        hovermode="x unified",
-    )
-
-    st.plotly_chart(fig_el_cost, use_container_width=True)
-
-    st.markdown("---")
-    st.markdown("### Electricity + carbon cost sensitivity to electricity price")
-
-    fig_el_carbon = go.Figure()
-
-    for _, r in df.iterrows():
-        E = country_df[country_df["country"] == r["Country"]]["energy_kwh_per_t"].iloc[0]
-        electricity_co2 = r["CO₂ footprint (kg/t)"]
-
-        combined_cost_curve = E * price_range + (electricity_co2 / 1000) * carbon_tax
-
-        fig_el_carbon.add_trace(
-            go.Scatter(
-                x=price_range,
-                y=combined_cost_curve,
-                mode="lines",
-                name=r["Country"],
-                line=dict(color=country_colors[r["Country"]], width=2),
-            )
-        )
-
-    fig_el_carbon.update_layout(
-        xaxis_title="Electricity price (€/kWh)",
-        yaxis_title="Electricity + carbon cost (€/t)",
-        hovermode="x unified",
-    )
-
-    st.plotly_chart(fig_el_carbon, use_container_width=True)
-
-# -------------------------------------------------
-# TAB 3 — Electricity & grid mix — Electricity & grid mix
-# -------------------------------------------------
+# =================================================
+# TAB 2 — Electricity & grid
+# =================================================
 with tab_grid:
     st.subheader("Electricity system representation")
 
     selected_country = st.selectbox("Select country", countries_selected)
-    mix = country_mixes[selected_country]
+
+    mix = (
+        country_mixes_manual[selected_country]
+        if manual_mode
+        else country_mixes_auto[selected_country]
+    )
 
     mix_df = pd.DataFrame(
         {"Source": list(mix.keys()), "Share": list(mix.values())}
@@ -277,33 +235,42 @@ with tab_grid:
     st.plotly_chart(fig_mix, use_container_width=True)
 
     with st.expander("Adjust grid mix manually"):
-        new_mix = {}
-        for s in sources:
-            new_mix[s] = st.slider(
-                s.capitalize(),
-                min_value=0.0,
-                max_value=1.0,
-                value=mix[s],
-                step=0.01,
-                key=f"grid_{selected_country}_{s}",
-            )
-
-        total = sum(new_mix.values())
-        if total > 0:
+        if not manual_mode:
+            st.info("Switch to *Manual (scenario grid)* mode to enable editing.")
+        else:
+            new_mix = {}
             for s in sources:
-                mix[s] = new_mix[s] / total
+                new_mix[s] = st.slider(
+                    s.capitalize(),
+                    min_value=0.0,
+                    max_value=1.0,
+                    value=country_mixes_manual[selected_country][s],
+                    step=0.01,
+                    key=f"grid_{selected_country}_{s}",
+                )
 
-        st.info(
-            f"Resulting electricity price: "
-            f"{sum(mix[s]*price_factors[s] for s in sources):.3f} €/kWh  \
-"
-            f"Resulting CO₂ intensity: "
-            f"{sum(mix[s]*co2_factors[s] for s in sources):.3f} kg/kWh"
-        )
+            total = sum(new_mix.values())
 
-# -------------------------------------------------
-# TAB 4 — Cost structure
-# -------------------------------------------------
+            if abs(total - 1.0) > 1e-6:
+                st.error(
+                    f"⚠️ Grid not normalized (sum = {total:.3f}). "
+                    "Adjust shares so total = 1."
+                )
+            else:
+                country_mixes_manual[selected_country] = new_mix
+
+                st.success("Grid mix normalized ✔")
+
+                st.info(
+                    f"Resulting electricity price: "
+                    f"{sum(new_mix[s]*price_factors[s] for s in sources):.3f} €/kWh\n\n"
+                    f"Resulting CO₂ intensity: "
+                    f"{sum(new_mix[s]*co2_factors[s] for s in sources):.3f} kg/kWh"
+                )
+
+# =================================================
+# TAB 3 — Cost structure
+# =================================================
 with tab_costs:
     st.subheader("Cost composition by country")
 
@@ -317,9 +284,7 @@ with tab_costs:
 
     fig_stack = go.Figure()
     for col in cost_cols:
-        fig_stack.add_trace(
-            go.Bar(x=df["Country"], y=df[col], name=col)
-        )
+        fig_stack.add_trace(go.Bar(x=df["Country"], y=df[col], name=col))
 
     fig_stack.update_layout(
         barmode="stack",
@@ -332,6 +297,3 @@ with tab_costs:
     st.markdown("---")
     st.caption("Detailed numerical outputs")
     st.dataframe(df.round(2), use_container_width=True)
-
-
-
