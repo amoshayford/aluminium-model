@@ -206,6 +206,62 @@ with tab_scenario:
     )
 
     st.plotly_chart(fig_tradeoff, use_container_width=True)
+    st.markdown("---")
+    st.markdown("### Electricity cost sensitivity to electricity price")
+
+    price_range = np.linspace(0.03, 0.20, 200)
+    fig_el_cost = go.Figure()
+
+    for _, r in df.iterrows():
+        E = country_df[country_df["country"] == r["Country"]]["energy_kwh_per_t"].iloc[0]
+        electricity_cost_curve = E * price_range
+
+        fig_el_cost.add_trace(
+            go.Scatter(
+                x=price_range,
+                y=electricity_cost_curve,
+                mode="lines",
+                name=r["Country"],
+                line=dict(color=country_colors[r["Country"]], width=2),
+            )
+        )
+
+    fig_el_cost.update_layout(
+        xaxis_title="Electricity price (€/kWh)",
+        yaxis_title="Electricity cost (€/t)",
+        hovermode="x unified",
+    )
+
+    st.plotly_chart(fig_el_cost, use_container_width=True)
+
+    st.markdown("---")
+    st.markdown("### Electricity + carbon cost sensitivity to electricity price")
+
+    fig_el_carbon = go.Figure()
+
+    for _, r in df.iterrows():
+        E = country_df[country_df["country"] == r["Country"]]["energy_kwh_per_t"].iloc[0]
+        electricity_co2 = r["CO₂ footprint (kg/t)"]
+
+        combined_cost_curve = E * price_range + (electricity_co2 / 1000) * carbon_tax
+
+        fig_el_carbon.add_trace(
+            go.Scatter(
+                x=price_range,
+                y=combined_cost_curve,
+                mode="lines",
+                name=r["Country"],
+                line=dict(color=country_colors[r["Country"]], width=2),
+            )
+        )
+
+    fig_el_carbon.update_layout(
+        xaxis_title="Electricity price (€/kWh)",
+        yaxis_title="Electricity + carbon cost (€/t)",
+        hovermode="x unified",
+    )
+
+    st.plotly_chart(fig_el_carbon, use_container_width=True)
 
 # =================================================
 # TAB 2 — Electricity & grid
@@ -297,3 +353,4 @@ with tab_costs:
     st.markdown("---")
     st.caption("Detailed numerical outputs")
     st.dataframe(df.round(2), use_container_width=True)
+
