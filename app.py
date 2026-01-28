@@ -138,6 +138,7 @@ with tab_map:
     )
 
     fig_map.update_geos(
+        bgcolor="rgba(0,0,0,0)"
         showcountries=True,
         countrycolor="lightgray",
         showcoastlines=False,
@@ -220,3 +221,4 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
