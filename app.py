@@ -136,24 +136,23 @@ with tab_map:
         },
         title="Total aluminium production cost by country",
     )
-
-fig_map.update_layout(
-    paper_bgcolor="#0e1117",
-    plot_bgcolor="#0e1117",
-)
-
-fig_map.update_geos(
-    bgcolor="#0e1117",
-    showcountries=True,
-    countrycolor="#2a2f3a",   # subtle country borders
-    showcoastlines=True,
-    coastlinecolor="#3a3f4b",  # soft coastlines
-    coastlinewidth=0.6,
-    showframe=False,
-    projection_type="natural earth",
-)
-
     fig_map.update_layout(
+        paper_bgcolor="#0e1117",
+        plot_bgcolor="#0e1117",
+    )
+    fig_map.update_geos(
+        bgcolor="#0e1117",
+        showcountries=True,
+        countrycolor="#2a2f3a",   # subtle country borders
+        showcoastlines=True,
+        coastlinecolor="#3a3f4b",  # soft coastlines
+        coastlinewidth=0.6,
+        showframe=False,
+        projection_type="natural earth",
+    )
+
+
+    fig_map.update _layout(
         margin={"r": 0, "t": 50, "l": 0, "b": 0},
         coloraxis_colorbar=dict(title="€/t aluminium"),
     )
@@ -228,6 +227,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
