@@ -152,12 +152,12 @@ with tab_map:
   )
 
 
-    fig_map.update_layout(
-        margin={"r": 0, "t": 50, "l": 0, "b": 0},
-        coloraxis_colorbar=dict(title="€/t aluminium"),
-    )
+  fig_map.update_layout(
+    margin={"r": 0, "t": 50, "l": 0, "b": 0},
+    coloraxis_colorbar=dict(title="€/t aluminium"),
+  )
 
-    st.plotly_chart(fig_map, use_container_width=True)
+  st.plotly_chart(fig_map, use_container_width=True)
 
 # =================================================
 # TAB — Scenario outcomes
@@ -227,5 +227,6 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
