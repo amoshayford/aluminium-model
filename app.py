@@ -26,18 +26,10 @@ electricity_df = pd.read_csv("data/electricity_price_co2.csv")
 materials_df = pd.read_csv("data/materials_trade.csv")
 
 # =================================================
-# Sidebar
+# Sidebar (global parameters only)
 # =================================================
 with st.sidebar:
-    st.header("Select Countries")
-
-    countries_selected = st.multiselect(
-        "Countries included in comparison",
-        sorted(country_df["country"].unique()),
-        default=["China", "Canada"],
-    )
-
-    st.markdown("---")
+    st.header("Global parameters")
 
     carbon_tax = st.number_input(
         "Carbon price (€/t CO₂)",
@@ -54,6 +46,11 @@ with st.sidebar:
         value=15.0,
         step=1.0,
     ) / 100.0
+
+# =================================================
+# Countries — AUTOMATIC (ALL)
+# =================================================
+countries_selected = sorted(country_df["country"].unique())
 
 # =================================================
 # Core model calculations (AUTOMATED MODE ONLY)
@@ -107,7 +104,9 @@ df = pd.DataFrame(results)
 # Visual styling
 # =================================================
 PALETTE = pc.qualitative.Alphabet
-country_colors = {c: PALETTE[i % len(PALETTE)] for i, c in enumerate(countries_selected)}
+country_colors = {
+    c: PALETTE[i % len(PALETTE)] for i, c in enumerate(countries_selected)
+}
 
 # =================================================
 # Layout — tabs
@@ -115,6 +114,7 @@ country_colors = {c: PALETTE[i % len(PALETTE)] for i, c in enumerate(countries_s
 tab_map, tab_scenario, tab_costs = st.tabs(
     ["🌍 Global map", "⚙️ Scenario outcomes", "💰 Cost structure"]
 )
+
 # =================================================
 # TAB — Global map
 # =================================================
@@ -146,10 +146,8 @@ with tab_map:
     )
 
     fig_map.update_layout(
-        margin={"r":0,"t":50,"l":0,"b":0},
-        coloraxis_colorbar=dict(
-            title="€/t aluminium"
-        ),
+        margin={"r": 0, "t": 50, "l": 0, "b": 0},
+        coloraxis_colorbar=dict(title="€/t aluminium"),
     )
 
     st.plotly_chart(fig_map, use_container_width=True)
@@ -160,85 +158,39 @@ with tab_map:
 with tab_scenario:
     st.subheader("Scenario outcomes")
 
-    # -------------------------------------------------
-    # Plot 1: Electricity price vs electricity CO2 footprint
-    # -------------------------------------------------
     fig1 = px.scatter(
         df,
         x="Electricity CO₂ intensity (kg/kWh)",
         y="Electricity price (€/kWh)",
         color="Country",
-        text="Country",
-        color_discrete_map=country_colors,
         title="Electricity price vs electricity CO₂ intensity",
-    )
-    fig1.update_traces(textposition="top center")
-    fig1.update_layout(
-        xaxis_title="Electricity CO₂ intensity (kg CO₂ / kWh)",
-        yaxis_title="Electricity price (€/kWh)",    
     )
     st.plotly_chart(fig1, use_container_width=True)
 
-    st.markdown("---")
-
-    # -------------------------------------------------
-    # Plot 2: Total cost vs electricity price
-    # -------------------------------------------------
     fig2 = px.scatter(
         df,
         x="Electricity price (€/kWh)",
         y="Total cost (€/t)",
         color="Country",
-        text="Country",
-        color_discrete_map=country_colors,
         title="Total production cost vs electricity price",
-    )
-    fig2.update_traces(textposition="top center")
-    fig2.update_layout(
-        xaxis_title="Electricity price (€/kWh)",
-        yaxis_title="Total cost (€/t aluminium)",
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-    st.markdown("---")
-
-    # -------------------------------------------------
-    # Plot 3: Total cost vs CO2 footprint
-    # -------------------------------------------------
     fig3 = px.scatter(
         df,
         x="CO₂ footprint (kg/t)",
         y="Total cost (€/t)",
         color="Country",
-        text="Country",
-        color_discrete_map=country_colors,
         title="Total production cost vs CO₂ footprint",
-    )
-    fig3.update_traces(textposition="top center")
-    fig3.update_layout(
-        xaxis_title="CO₂ footprint (kg CO₂ / t aluminium)",
-        yaxis_title="Total cost (€/t aluminium)",
     )
     st.plotly_chart(fig3, use_container_width=True)
 
-    st.markdown("---")
-
-    # -------------------------------------------------
-    # Plot 4: Electricity cost vs electricity price
-    # -------------------------------------------------
     fig4 = px.scatter(
         df,
         x="Electricity price (€/kWh)",
         y="Electricity cost (€/t)",
         color="Country",
-        text="Country",
-        color_discrete_map=country_colors,
         title="Electricity cost vs electricity price",
-    )
-    fig4.update_traces(textposition="top center")
-    fig4.update_layout(
-        xaxis_title="Electricity price (€/kWh)",
-        yaxis_title="Electricity cost (€/t aluminium)",
     )
     st.plotly_chart(fig4, use_container_width=True)
 
@@ -268,7 +220,3 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
-
-
-
-
