@@ -112,9 +112,47 @@ country_colors = {c: PALETTE[i % len(PALETTE)] for i, c in enumerate(countries_s
 # =================================================
 # Layout — tabs
 # =================================================
-tab_scenario, tab_costs = st.tabs(
-    ["⚙️ Scenario outcomes", "💰 Cost structure"]
+tab_map, tab_scenario, tab_costs = st.tabs(
+    ["🌍 Global map", "⚙️ Scenario outcomes", "💰 Cost structure"]
 )
+# =================================================
+# TAB — Global map
+# =================================================
+with tab_map:
+    st.subheader("Global overview of aluminium production metrics")
+
+    fig_map = px.choropleth(
+        df,
+        locations="Country",
+        locationmode="country names",
+        color="Total cost (€/t)",
+        color_continuous_scale="Viridis",
+        range_color=(df["Total cost (€/t)"].min(), df["Total cost (€/t)"].max()),
+        hover_name="Country",
+        hover_data={
+            "Total cost (€/t)": ":.1f",
+            "Electricity price (€/kWh)": ":.3f",
+            "CO₂ footprint (kg/t)": ":.0f",
+        },
+        title="Total aluminium production cost by country",
+    )
+
+    fig_map.update_geos(
+        showcountries=True,
+        countrycolor="lightgray",
+        showcoastlines=False,
+        showframe=False,
+        projection_type="natural earth",
+    )
+
+    fig_map.update_layout(
+        margin={"r":0,"t":50,"l":0,"b":0},
+        coloraxis_colorbar=dict(
+            title="€/t aluminium"
+        ),
+    )
+
+    st.plotly_chart(fig_map, use_container_width=True)
 
 # =================================================
 # TAB — Scenario outcomes
@@ -230,6 +268,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
