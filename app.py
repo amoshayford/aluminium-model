@@ -216,10 +216,12 @@ with tab_map:
         color_continuous_scale="Viridis",
         range_color=(df["Total cost (€/t)"].min(), df["Total cost (€/t)"].max()),
         hover_name="Country",
+        
         hover_data={
             "Total cost (€/t)": ":.1f",
-            "Electricity price (€/kWh)": ":.3f",
-            "CO₂ footprint (kg/t)": ":.0f",
+            "Electricity CO₂ (kg/t)": ":.3f",
+            "Non-electricity CO₂ (kg/t)": ":.0f",
+            "Total CO₂ (kg/t)": ":.0f",
         },
         title="Total aluminium production cost by country",
     )
@@ -314,6 +316,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
