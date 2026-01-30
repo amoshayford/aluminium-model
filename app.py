@@ -256,10 +256,18 @@ with tab_scenario:
 
     fig1 = px.scatter(
         df,
-        x="Electricity CO₂ intensity (kg/kWh)",
-        y="Electricity price (€/kWh)",
+        x="Total CO₂ (kg/t)",
+        y="Total cost (€/t)",
+        size="Total cost (€/t)",
         color="Country",
-        title="Electricity price vs electricity CO₂ intensity",
+        hover_name="Country",
+        hover_data={
+            "Electricity CO₂ (kg/t)": ":.0f",
+            "Non-electricity CO₂ (kg/t)": ":.0f",
+            "Total CO₂ (kg/t)": ":.0f",
+
+        },
+        title="Total aluminium cost vs total CO₂ footprint",
     )
     st.plotly_chart(fig1, use_container_width=True)
 
@@ -316,6 +324,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
