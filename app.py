@@ -30,6 +30,25 @@ electricity_df = pd.read_csv("data/electricity_price_co2.csv")
 # NEW material cost files
 alumina_df = pd.read_csv("data/alumina_costs.csv")
 petcoke_df = pd.read_csv("data/calc_petcoke_costs.csv")
+# Sustainability / trade-based CO2 dataset (the one you just uploaded)
+sustainability_df = pd.read_csv("data/total_co2_tot_dat.csv")
+
+# Drop empty rows (same as notebook)
+sustainability_df = sustainability_df.dropna(how="all")
+
+# Clean numeric columns exactly like your notebook logic (remove commas, coerce, fill 0)
+for col in [
+    "Bauxite_tonnes_m", "Bauxite_tonnes_x", "Bauxite_local_tonnes",
+    "Alumina_tonnes_m", "Alumina_tonnes_x"
+]:
+    if col in sustainability_df.columns:
+        sustainability_df[col] = (
+            sustainability_df[col]
+            .astype(str)
+            .str.replace(",", "", regex=True)
+        )
+        sustainability_df[col] = pd.to_numeric(sustainability_df[col], errors="coerce").fillna(0)
+
 
 # Clean country names
 for df in [country_df, electricity_df, alumina_df, petcoke_df]:
@@ -61,6 +80,90 @@ with st.sidebar:
 # Countries — AUTOMATIC (ALL)
 # =================================================
 countries_selected = sorted(country_df["country"].unique())
+##################################################################################################
+def compute_total_co2_intensity_from_trade(df, country_name):
+    # ---- EXACT CONSTANTS FROM YOUR CODE ----
+    bauxite_grade = 0.5  # fraction of alumina from local bauxite
+    current_efficiency = 0.9  # CE
+
+    stochiometric_al = 1.889  # tAl2O3/t Al
+    stochiometric_c = 0.333   # tC/ t Al
+    stochiometric_co2 = 1.222 # tCO2 / tAl
+
+    bauxite_footprint = 0.035 # tCO2/t bauxite
+
+    fuel_oil_alumina = 0.093      # kg fuel oil / kg alumina
+    fuel_oil_co2 = 3.52           # kg CO2 / kg fuel oil
+    natural_gas_alumina = 0.17    # kg natural gas / kg alumina
+    natural_gas_co2 = 1.98        # kg CO2 / kg natural gas
+    energy_alumina = 0.109        # kWh/ kg alumina
+
+    voltage_cell = 4.64  # V
+    anode_footprint = 1.5 # t CO2 / t Al
+
+    # ---- EXACT LOGIC FROM YOUR CODE (just organized) ----
+    def total_bauxite_for_country(country_name):
+        imports = df.loc[df['Bauxite_destination_m'] == country_name, 'Bauxite_tonnes_m'].sum() / 1000  # kg → t
+        exports = df.loc[df['Bauxite_destination_x'] == country_name, 'Bauxite_tonnes_x'].sum() / 1000  # kg → t
+        domestic = df.loc[df['Bauxite_local_country'] == country_name, 'Bauxite_local_tonnes'].sum() * 1000  # 1000 t → t
+        total = imports + domestic - exports
+        return total / 1e6  # tonnes (Mtonnes-style scaling as in code)
+
+    def total_alumina_for_country(country_name):
+        imports = df.loc[df['Alumina_destination_m'] == country_name, 'Alumina_tonnes_m'].sum() / 1000  # kg → t
+        exports = df.loc[df['Alumina_destination_x'] == country_name, 'Alumina_tonnes_x'].sum() / 1000  # kg → t
+        total = imports - exports
+        return total / 1e6  # tonnes
+
+    def electricity_footprint_per_country(country_name):
+        electricity_footprint = df.loc[df['country1'] == country_name, 'avg_co2_kg_per_kwh'].sum()
+        return electricity_footprint
+
+    def energy_intensity_per_country(country_name):
+        energy_intensity = df.loc[df['country2'] == country_name, 'energy_kwh_per_t'].sum() / 1000
+        return energy_intensity
+
+    total_bauxite = total_bauxite_for_country(country_name)
+    total_alumina = total_bauxite * bauxite_grade + total_alumina_for_country(country_name)
+
+    total_al = total_alumina / stochiometric_al * current_efficiency
+    total_c = total_al * stochiometric_c / current_efficiency
+    total_reaction_co2 = total_al * stochiometric_co2 / current_efficiency
+
+    bauxite_co2 = bauxite_footprint * total_bauxite
+
+    energy_co2 = electricity_footprint_per_country(country_name)  # kg CO2 / kWh
+
+    alumina_co2 = (
+        (fuel_oil_alumina * fuel_oil_co2 + natural_gas_alumina * natural_gas_co2 + energy_alumina * energy_co2)
+        * total_alumina
+        + bauxite_co2
+    )
+
+    energy_hh_mode_1 = 2.9806 * voltage_cell / current_efficiency # MWh / t Al
+    energy_hh_mode_2 = energy_intensity_per_country(country_name) # MWh / t Al
+
+    total_energy_co2_mode_1 = energy_co2 * energy_hh_mode_1 * total_al
+    total_energy_co2_mode_2 = energy_co2 * energy_hh_mode_2 * total_al
+
+    anode_co2 = anode_footprint * total_al
+
+    total_co2_mode_1 = total_reaction_co2 + bauxite_co2 + alumina_co2 + total_energy_co2_mode_1 + anode_co2
+    total_co2_mode_2 = total_reaction_co2 + bauxite_co2 + alumina_co2 + total_energy_co2_mode_2 + anode_co2
+
+    functional_unit_mode_1 = total_co2_mode_1 / total_al
+    functional_unit_mode_2 = total_co2_mode_2 / total_al
+
+    functional_unit_avg = (functional_unit_mode_1 + functional_unit_mode_2) / 2
+
+    return {
+        "Functional_unit": functional_unit_avg,  # as in code
+        "functional_unit_mode_1": functional_unit_mode_1,
+        "functional_unit_mode_2": functional_unit_mode_2,
+        "total_al": total_al,
+        "total_alumina": total_alumina,
+        "total_bauxite": total_bauxite,
+    }
 
 # =================================================
 # Core model calculations (AUTOMATED MODE ONLY)
@@ -90,7 +193,14 @@ for country in countries_selected:
     # Electricity cost and emissions
     electricity_cost = E * electricity_price
     electricity_co2 = E * grid_co2_intensity
+############################################################################################################
+    # Build total CO2 intensity from the sustainability dataset (trade-based)
+    co2_info = compute_total_co2_intensity_from_trade(sustainability_df, country)
 
+# Convert tCO2/tAl to kgCO2/tAl
+    material_co2 = co2_info["Functional_unit"] * 1000.0
+
+##############################################################################################################    
     # =================================================
     # NEW MATERIAL COST LOGIC
     # =================================================
@@ -261,6 +371,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
