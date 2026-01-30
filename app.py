@@ -49,6 +49,19 @@ for col in [
         )
         sustainability_df[col] = pd.to_numeric(sustainability_df[col], errors="coerce").fillna(0)
 
+# Clean country-name fields in sustainability_df (prevents mismatch due to trailing spaces)
+country_cols = [
+    "Bauxite_destination_m",
+    "Bauxite_destination_x",
+    "Bauxite_local_country",
+    "Alumina_destination_m",
+    "Alumina_destination_x",
+    "country1",
+    "country2",
+]
+for col in country_cols:
+    if col in sustainability_df.columns:
+        sustainability_df[col] = sustainability_df[col].astype(str).str.strip()
 
 # Clean country names
 for df in [country_df, electricity_df, alumina_df, petcoke_df]:
@@ -196,7 +209,14 @@ for country in countries_selected:
 ############################################################################################################
     # Build total CO2 intensity from the sustainability dataset (trade-based)
     co2_info = compute_total_co2_intensity_from_trade(sustainability_df, country)
-
+    if (
+        co2_info is None
+        or co2_info.get("Functional_unit") is None
+        or pd.isna(co2_info.get("Functional_unit"))
+        or co2_info.get("total_al", 0) == 0
+    ):
+        continue
+        
 # Convert tCO2/tAl to kgCO2/tAl
     material_co2 = co2_info["Functional_unit"] * 1000.0
 
@@ -218,7 +238,7 @@ for country in countries_selected:
     )
 
     material_cost = alumina_cost + petcoke_cost
-    material_co2 = 0.0  # not modeled
+    #material_co2 = 0.0  # not modeled
 
     # Carbon cost
     carbon_cost = ((electricity_co2 + material_co2) / 1000) * carbon_tax
@@ -371,6 +391,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
