@@ -64,7 +64,7 @@ st.markdown(
         position: fixed;
         top: 4.1rem;            /* just below your topbar */
         left: 26rem;            /* same as topbar left */
-        right: 17rem;           /* same as topbar right */
+        right: 24rem;           /* same as topbar right */
         z-index: 997;
 
         background: rgba(14,17,23,0.92);
@@ -511,6 +511,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
