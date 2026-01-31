@@ -44,7 +44,7 @@ st.markdown(
 
       /* When sidebar is collapsed, bar should start at the left edge */
       section[data-testid="stSidebar"][aria-expanded="false"] ~ div .custom-topbar{
-        left: 1rem;
+        left: 20rem;
       }
 
       .custom-topbar .title{
@@ -57,7 +57,7 @@ st.markdown(
 
       /* Push main content below the fixed bar */
       .block-container{
-        padding-top: 5.5rem;
+        padding-top: 2.5rem;
       }
     </style>
 
@@ -489,6 +489,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
