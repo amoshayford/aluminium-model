@@ -419,7 +419,7 @@ tab_map, tab_scenario, tab_costs = st.tabs(
 # =================================================
 with tab_map:
     st.markdown(
-        "<h3 style='font-size:1.25rem; margin-bottom:0.5rem;'>"
+        "<h3 style='font-size:1.25rem; margin:0 0 0.2rem 0;'>"
         "Global overview of aluminium production metrics"
         "</h3>",
         unsafe_allow_html=True
@@ -513,7 +513,7 @@ with tab_scenario:
 
 with tab_costs:
     st.markdown(
-        "<h3 style='font-size:1.25rem; margin-bottom:0.5rem;'>"
+        "<h3 style='font-size:1.25rem; margin:0 0 0.2rem 0;'>"
         "Cost composition by country"
         "</h3>",
         unsafe_allow_html=True
@@ -539,6 +539,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
