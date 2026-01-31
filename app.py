@@ -8,12 +8,12 @@ import plotly.colors as pc
 # Page configuration
 # =================================================
 st.set_page_config(
-    page_title="Aluminium Production Decision Support Tool",
+    page_title="Aluminium Production Cost Model",
     layout="wide"
 )
 
 st.set_page_config(
-    page_title="Aluminium Production Decision Support Tool",
+    page_title="Aluminium Production Cost Model",
     layout="wide"
 )
 
@@ -32,7 +32,7 @@ st.markdown(
       .custom-topbar{
         position: fixed;
         top: 0.25rem;
-        right: 17rem;
+        right: 14rem;
         left: 25rem;
         height: 3.2rem;
         display: flex;
@@ -106,7 +106,7 @@ st.markdown(
     </style>
 
     <div class="custom-topbar">
-      <div class="title">⚡ Aluminium Production — Decision Support Tool</div>
+      <div class="title">⚡ Aluminium Production — Cost Model</div>
     </div>
     """,
     unsafe_allow_html=True
@@ -530,6 +530,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
