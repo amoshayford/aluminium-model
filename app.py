@@ -15,6 +15,16 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+    /* Full-width mask behind the header + tabs (prevents content showing on sides) */
+     .top-mask{
+       position: fixed;
+       top: 0;
+       left: 0;
+       right: 0;
+       height: 8.2rem;         /* must cover: topbar + tabs + a bit */
+       background: #0e1117;    /* same as your app background */
+       z-index: 996;           /* behind topbar (998) and tabs (997) */
+       
       /* Keep Streamlit header controls (Deploy + menu) but make header transparent */
       header[data-testid="stHeader"]{
         background: rgba(0,0,0,0);
@@ -82,11 +92,20 @@ st.markdown(
      ~ div div[role="tablist"]{
        left: 20rem;
      }
+     
+     }
+
 
 
 
       
     </style>
+
+    <div class="top-mask"></div>
+    <div class="custom-topbar">
+      <div class="title">⚡ Aluminium Production — Decision Support Tool</div>
+    </div>
+
 
 
     <div class="custom-topbar">
@@ -515,6 +534,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
