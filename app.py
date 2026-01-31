@@ -49,7 +49,7 @@ st.markdown(
 
       .custom-topbar .title{
         color: white;
-        font-size: 1.35rem;
+        font-size: 1.45rem;
         font-weight: 800;
         line-height: 1;
         margin: 0;
@@ -489,6 +489,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
