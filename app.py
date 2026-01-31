@@ -169,7 +169,7 @@ with st.sidebar:
     st.header("Global parameters")
 
     carbon_tax = st.number_input(
-        "Carbon price (€/t CO₂)",
+        "Carbon Tax (€/t CO₂)",
         min_value=0.0,
         max_value=300.0,
         value=60.0,
@@ -177,14 +177,14 @@ with st.sidebar:
     )
 
     margin_rate = st.number_input(
-        "Producer margin (% of operational cost)",
+        "Producer Margin (% of operational cost)",
         min_value=0.0,
         max_value=50.0,
         value=15.0,
         step=1.0,
     ) / 100.0
     current_efficiency = st.number_input(
-        "Current efficiency (CE)",
+        "Current Efficiency ",
         min_value=0.70,
         max_value=1.00,
         value=0.90,
@@ -201,7 +201,7 @@ with st.sidebar:
     )
 
     voltage_cell = st.number_input(
-        "Cell voltage (V)",
+        "Cell Voltage (V)",
         min_value=3.0,
         max_value=6.0,
         value=4.64,
@@ -438,7 +438,7 @@ with tab_map:
             "CO₂ footprint (kg/t)": ":.0f",
             "Electricity CO₂ (kg/t)": ":.0f",
         },
-        title="Total aluminium production cost by country",
+        #title="Total aluminium production cost by country",
     )
     fig_map.update_layout(
         paper_bgcolor="#0e1117",
@@ -530,6 +530,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
