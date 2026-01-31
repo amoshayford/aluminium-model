@@ -418,7 +418,12 @@ tab_map, tab_scenario, tab_costs = st.tabs(
 # TAB — Global map
 # =================================================
 with tab_map:
-    st.subheader("Global overview of aluminium production metrics")
+    st.markdown(
+        "<h3 style='font-size:1.25rem; margin-bottom:0.5rem;'>"
+        "Global overview of aluminium production metrics"
+        "</h3>",
+        unsafe_allow_html=True
+    )
 
     fig_map = px.choropleth(
         df,
@@ -526,6 +531,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
