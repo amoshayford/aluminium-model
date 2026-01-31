@@ -34,8 +34,8 @@ st.markdown(
         align-items: center;
         padding: 0 1.25rem;
 
-        background: rgba(14,17,23,0.92);
-        backdrop-filter: blur(6px);
+        background: #0e1117;   /* fully opaque */
+
         border: 1px solid #2a2f3a;
         border-radius: 14px;
 
@@ -71,8 +71,8 @@ st.markdown(
         right: 17rem;             /* same right offset as topbar */
         z-index: 997;
 
-        background: rgba(14,17,23,0.92);
-        backdrop-filter: blur(6px);
+        background: #0e1117;   /* fully opaque */
+
         border-bottom: 1px solid #2a2f3a;
         padding: 0.25rem 0.75rem;
      }
@@ -516,6 +516,7 @@ with tab_costs:
 
     st.plotly_chart(fig, use_container_width=True)
     st.dataframe(df.round(2), use_container_width=True)
+
 
 
 
